@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/add_alarm_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#4ED16D">
+
+        <ImageButton
+            android:id="@+id/btn_addAlarm_exit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_baseline_close_24"
+            android:background="@android:color/transparent"
+            android:tint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotationX="4"
+            android:text="일정등록"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <ImageButton
+            android:id="@+id/btn_addAlarm"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_baseline_check_24"
+            android:background="@android:color/transparent"
+            android:tint="@color/white"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/edittext_alarmtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/add_alarm_topbar"
+        android:hint="일정 제목을 입력하세요"
+        android:layout_margin="15dp"
+        android:background="@null"/>
+    <View
+        android:id="@+id/alarmtitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/edittext_alarmtitle"
+        android:background="@color/gray"/>
+
+
+    <TextView
+        android:id="@+id/textview_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="시작"
+        android:textSize="17dp"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/alarmtitleBar"
+        android:layout_margin="15dp"
+        />
+    <CheckBox
+        android:id="@+id/checkbox_allday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/textview_alarmStartDate"
+        app:layout_constraintBottom_toBottomOf="@+id/textview_alarmStartDate"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="하루종일"
+        app:layout_constraintTop_toTopOf="@+id/checkbox_allday"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_allday"
+        app:layout_constraintRight_toLeftOf="@id/checkbox_allday"/>
+    <TextView
+        android:id="@+id/textview_alarmStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/textview_start"
+        app:layout_constraintTop_toBottomOf="@id/alarmtitleBar"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:padding="5dp"
+        android:hint="터치하여 선택"
+        android:textColor="@color/black"
+        android:textSize="17dp"/>
+    <TextView
+        android:id="@+id/textview_alarmStartTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/textview_start"
+        app:layout_constraintTop_toBottomOf="@id/textview_alarmStartDate"
+        android:layout_marginLeft="20dp"
+        android:padding="5dp"
+        android:hint="터치하여 선택"
+        android:textColor="@color/black"
+        android:textSize="17dp"/>
+
+
+    <TextView
+        android:id="@+id/textview_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="종료"
+        android:textSize="17dp"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textview_alarmStartTime"
+        android:layout_margin="15dp"
+        />
+    <TextView
+        android:id="@+id/textview_alarmEndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/textview_end"
+        app:layout_constraintTop_toBottomOf="@id/textview_alarmStartTime"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:padding="5dp"
+        android:hint="터치하여 선택"
+        android:textColor="@color/black"
+        android:textSize="17dp"/>
+    <TextView
+        android:id="@+id/textview_alarmEndTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/textview_end"
+        app:layout_constraintTop_toBottomOf="@id/textview_alarmEndDate"
+        android:layout_marginLeft="20dp"
+        android:padding="5dp"
+        android:hint="터치하여 선택"
+        android:textColor="@color/black"
+        android:textSize="17dp"/>
+
+    <View
+        android:id="@+id/selectTimebar"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/textview_alarmEndTime"
+        android:background="@color/gray"/>
+
+    <ImageView
+        android:id="@+id/imgView_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_list_alt_24_gray"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectTimebar"
+        android:layout_margin="15dp"/>
+    <EditText
+        android:id="@+id/edittext_alarmcontent"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="설명"
+        android:background="@null"
+        app:layout_constraintLeft_toRightOf="@+id/imgView_content"
+        app:layout_constraintTop_toBottomOf="@+id/selectTimebar"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="30dp"/>
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+        app:layout_constraintLeft_toRightOf="@+id/edittext_alarmcontent"
+        app:layout_constraintTop_toTopOf="@id/edittext_alarmcontent"
+        app:layout_constraintBottom_toBottomOf="@id/edittext_alarmcontent"/>
+
+    <ImageView
+        android:id="@+id/imgView_repeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_repeat_24"
+        app:layout_constraintTop_toBottomOf="@+id/imgView_content"
+        app:layout_constraintLeft_toLeftOf="@+id/imgView_content"
+        android:layout_marginTop="15dp"/>
+    <TextView
+        android:id="@+id/textView_alarmrepeat"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="반복"
+        app:layout_constraintTop_toTopOf="@+id/imgView_repeat"
+        app:layout_constraintBottom_toBottomOf="@id/imgView_repeat"
+        app:layout_constraintLeft_toLeftOf="@id/edittext_alarmcontent"
+        android:textSize="18dp"/>
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+        app:layout_constraintLeft_toRightOf="@+id/textView_alarmrepeat"
+        app:layout_constraintTop_toTopOf="@id/textView_alarmrepeat"
+        app:layout_constraintBottom_toBottomOf="@id/textView_alarmrepeat"/>
+
+
+    <ImageView
+        android:id="@+id/imgView_alarmbell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_notifications_active_24"
+        app:layout_constraintLeft_toLeftOf="@+id/imgView_repeat"
+        app:layout_constraintTop_toBottomOf="@id/imgView_repeat"
+        android:layout_marginTop="15dp"/>
+    <TextView
+        android:id="@+id/textView_alarmBell"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="알림"
+        android:textSize="18dp"
+        app:layout_constraintTop_toTopOf="@+id/imgView_alarmbell"
+        app:layout_constraintLeft_toLeftOf="@+id/textView_alarmrepeat"/>
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+        app:layout_constraintLeft_toRightOf="@+id/textView_alarmBell"
+        app:layout_constraintTop_toTopOf="@id/textView_alarmBell"
+        app:layout_constraintBottom_toBottomOf="@id/textView_alarmBell"/>
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/todo"
+        android:icon="@drawable/ic_baseline_calendar_month_24"
+        android:title="일정"
+        android:enabled="true"
+        />
+
+    <item
+        android:id="@+id/backup"
+        android:icon="@drawable/ic_baseline_check_box_24"
+        android:title="백업체크"
+        android:enabled="true"
+        />
+    <item
+        android:id="@+id/work"
+        android:icon="@drawable/ic_baseline_assignment_24"
+        android:title="장애처리"
+        android:enabled="true"
+        />
+    <item
+        android:id="@+id/inventory"
+        android:icon="@drawable/ic_baseline_shopping_cart_24"
+        android:title="재고현황"
+        android:enabled="true"
+        />
+
+</menu>
