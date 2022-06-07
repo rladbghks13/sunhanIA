@@ -199,7 +199,6 @@ public class Fragment_todo_addAlarm extends Fragment {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             Log.i("date", year + " " + month + " " + day);
-            test(year,month,day);
             add_startdate.setText(year + "년 " + month + "월 " + day + "일");
         }
     };
@@ -280,6 +279,8 @@ public class Fragment_todo_addAlarm extends Fragment {
         today.set(year,month,day);
         today.add(Calendar.YEAR,1);
         Log.i("test",simpleDateFormat.format(today.getTime()));
+
+        return null;
     }
 
 
