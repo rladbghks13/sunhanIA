@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.sunhania.todo.TodoDAO;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 
@@ -18,6 +20,8 @@ public class Fragment_inventory extends Fragment {
     private View view;
 
     private String TAG = "프래그먼트";
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
 
     @Nullable
     @Override
@@ -28,9 +32,9 @@ public class Fragment_inventory extends Fragment {
         TodoDAO todoDAO = new TodoDAO();
         Log.i("log", String.valueOf(MainActivity.bottomNavigationView.getSelectedItemId()));
 
-//        Log.i("test", todoDAO.countdday(2022,06,02, 15, 35) +"");
-//        todoDAO.nowDate();
-        todoDAO.test();
+        databaseReference.child("message").push().setValue("2");
+        databaseReference.child("message").child("gbgg").setValue("2");
+
 
 
         return view;

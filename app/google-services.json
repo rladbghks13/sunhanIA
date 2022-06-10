@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "259595134559",
+    "project_id": "sunhania-3baf6",
+    "storage_bucket": "sunhania-3baf6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259595134559:android:6f14ac990e6754519b1dea",
+        "android_client_info": {
+          "package_name": "com.example.sunhania"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259595134559-m2ld89t0ck4hhc2lnbqi7ltd59cedei8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtxryDm_kvDd1Tu35z6aqGh8K2pZYd-fo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259595134559-m2ld89t0ck4hhc2lnbqi7ltd59cedei8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

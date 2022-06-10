@@ -116,13 +116,13 @@ public class Fragment_todo_addAlarm extends Fragment {
                 if (!checkBox_allday.isChecked()) {
                     if (add_startdate.length() == 0 || add_starttime.length() == 0 || add_enddate.length() == 0 || add_endtime.length() == 0) {
                         Toast.makeText(getContext(), "날짜, 시간을 입력해주세요", Toast.LENGTH_SHORT).show();
-                    } else {
-                        if ((clacTime(startdate, enddate) == true)){
-
-                        }
-
+                    }
+                } else {
+                    if ((clacTime(startdate, enddate) == true && add_startdate.length() != 0)) {
+                        Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                     }
                 }
+
 
             }
         });
@@ -166,7 +166,8 @@ public class Fragment_todo_addAlarm extends Fragment {
             @Override
             public void onClick(View view) {
                 final String[] items = {"없음", "매일", "매주", "매월", "매년"};
-                final String[] items1 = {"1일마다", "2일마다", "3일마다", "4일마다", "5일마다"};
+                final String[] items1 = {"1일마다", "2일마다", "3일마다", "4일마다", "5일마다","6일마다"};
+                final String[] items2 = {"1주마다", "2주마다", "3주마다", "4주마다"};
                 AlertDialog.Builder rDialog = new AlertDialog.Builder(getContext(), android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                 rDialog.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
@@ -180,21 +181,29 @@ public class Fragment_todo_addAlarm extends Fragment {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         upload_repeatFLAG = items1[i];
-                                        Log.i("test", items1[i]);
+                                        add_repeat.setText("매일, "+(i+1)+"일 마다 반복");
                                     }
                                 }).show();
                                 break;
                             case 2:
-
-                                Log.i("test", items[2]);
+                                rDialog.setItems(items2, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        upload_repeatFLAG = items2[i];
+                                        add_repeat.setText("매주, " +(i+1)+"주 마다 반복");
+                                    }
+                                }).show();
                                 break;
                             case 3:
-                                Log.i("test", items[3]);
+                                upload_repeatFLAG = items[i];
+                                Log.i("test", items[i]);
+                                add_repeat.setText(items[i] + " 반복");
                                 break;
                             case 4:
-                                Log.i("test", items[4]);
+                                upload_repeatFLAG = items[i];
+                                Log.i("test", items[i]);
+                                add_repeat.setText(items[i] + " 반복");
                                 break;
-
                         }
                     }
                 }).show();
@@ -208,10 +217,8 @@ public class Fragment_todo_addAlarm extends Fragment {
                 aDialog.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i) {
-                            case 0:
-                                add_alarm.setHint("없음");
-                        }
+                        add_alarm.setText(items[i]);
+                        upload_alarmFLAG = (items[i]);
                     }
                 }).show();
             }
@@ -328,14 +335,11 @@ public class Fragment_todo_addAlarm extends Fragment {
         Calendar end = Calendar.getInstance();
         start.set(startdate[0], startdate[1], startdate[2], startdate[3], startdate[4]);
         end.set(enddate[0], enddate[1], enddate[2], enddate[3], enddate[4]);
-        Log.i("test", simpleDateFormat.format((start.getTime())));
-        Log.i("test", simpleDateFormat.format((end.getTime())));
-
         long today = start.getTimeInMillis();
         long dday = end.getTimeInMillis();
 
         long count = (today - dday);
-        if (count <= 0) {
+        if (count >= 0) {
             return true;
         } else {
             return false;
