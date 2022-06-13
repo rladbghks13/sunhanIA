@@ -2,7 +2,6 @@ package com.example.sunhania;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -23,14 +21,12 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.example.sunhania.todo.TodoDAO;
+import com.example.sunhania.todo.TodoTerminal;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class Fragment_todo_addAlarm extends Fragment {
     private View view;
@@ -41,15 +37,19 @@ public class Fragment_todo_addAlarm extends Fragment {
     CheckBox checkBox_allday;
     protected int year, month, day, hour, minute;
     Calendar today;
-    private String upload_title;
-    private String upload_startdate;
-    private String upload_starttime;
-    private String upload_enddate;
-    private String upload_endtime;
-    private String upload_alarmContent;
-    private String upload_repeatFLAG;
-    private String upload_alarmFLAG;
     private int[] startdate, enddate;
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        //프래그먼트 로드 시 전부 빈칸으로
+        checkBox_allday.setChecked(false);
+        add_title.setText(null);
+        add_content.setText(null);
+        Log.i("test","onPause");
+    }
 
 
     @Nullable
@@ -57,6 +57,8 @@ public class Fragment_todo_addAlarm extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_todo_add_alarm, container, false);
 
+
+        TodoTerminal todoTerminal = new TodoTerminal();
         BackPressEvent();
         fragment_todo = new Fragment_todo();
 
@@ -73,6 +75,7 @@ public class Fragment_todo_addAlarm extends Fragment {
         add_repeat = view.findViewById(R.id.textView_alarmrepeat);
         add_alarm = view.findViewById(R.id.textView_alarmBell);
         checkBox_allday = view.findViewById(R.id.checkbox_allday); //선언부
+
 
         checkBox_allday.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +98,8 @@ public class Fragment_todo_addAlarm extends Fragment {
         });
 
 
+
+
         /**
          * Datepicker, Timepicker selectListener
          */
@@ -102,15 +107,15 @@ public class Fragment_todo_addAlarm extends Fragment {
             @Override
             public void onClick(View view) {
                 if (add_title.length() == 0) { //일정 제목에 아무것도 없으면 "제목 없음"으로 등록
-                    upload_title = "제목 없음";
+                    todoTerminal.setTodoTitle("제목 없음");
                 } else {
-                    upload_title = String.valueOf(add_title.getText());
+                    todoTerminal.setTodoTitle(add_title.getText().toString());
                 }
 
                 if (add_content.length() == 0) {
-                    upload_alarmContent = "내용 없음";
+                    todoTerminal.setTodoContent("내용 없음");
                 } else {
-                    upload_alarmContent = String.valueOf(add_content.getText());
+                    todoTerminal.setTodoContent(add_content.getText().toString());
                 }
 
                 if (!checkBox_allday.isChecked()) {
@@ -119,6 +124,14 @@ public class Fragment_todo_addAlarm extends Fragment {
                     }
                 } else {
                     if ((clacTime(startdate, enddate) == true && add_startdate.length() != 0)) {
+                        Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if (checkBox_allday.isChecked()){
+                    if(add_startdate.getText().length()==0){
+                        Toast.makeText(getContext(), "시작날짜를 입력해주세요", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -165,48 +178,58 @@ public class Fragment_todo_addAlarm extends Fragment {
         add_repeat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String[] items = {"없음", "매일", "매주", "매월", "매년"};
-                final String[] items1 = {"1일마다", "2일마다", "3일마다", "4일마다", "5일마다","6일마다"};
-                final String[] items2 = {"1주마다", "2주마다", "3주마다", "4주마다"};
-                AlertDialog.Builder rDialog = new AlertDialog.Builder(getContext(), android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
-                rDialog.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i) {
-                            case 0:
-                                add_repeat.setHint("없음");
-                                break;
-                            case 1:
-                                rDialog.setItems(items1, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        upload_repeatFLAG = items1[i];
-                                        add_repeat.setText("매일, "+(i+1)+"일 마다 반복");
-                                    }
-                                }).show();
-                                break;
-                            case 2:
-                                rDialog.setItems(items2, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        upload_repeatFLAG = items2[i];
-                                        add_repeat.setText("매주, " +(i+1)+"주 마다 반복");
-                                    }
-                                }).show();
-                                break;
-                            case 3:
-                                upload_repeatFLAG = items[i];
-                                Log.i("test", items[i]);
-                                add_repeat.setText(items[i] + " 반복");
-                                break;
-                            case 4:
-                                upload_repeatFLAG = items[i];
-                                Log.i("test", items[i]);
-                                add_repeat.setText(items[i] + " 반복");
-                                break;
+                if (add_startdate.getText().length() == 0) {
+                    Toast.makeText(getContext(), "시작날짜를 입력해주세요", Toast.LENGTH_SHORT).show();
+                } else {
+                    final String[] items = {"없음", "매일", "매주", "매월", "매년"};
+                    final String[] items1 = {"1일마다", "2일마다", "3일마다", "4일마다", "5일마다", "6일마다"};
+                    final String[] items2 = {"1주마다", "2주마다", "3주마다", "4주마다"};
+                    final String[] items3 = {"월초","월말", String.valueOf(startdate[2])};
+
+                    AlertDialog.Builder rDialog = new AlertDialog.Builder(getContext(), android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
+                    rDialog.setItems(items, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            switch (i) {
+                                case 0:
+                                    add_repeat.setHint("없음");
+                                    break;
+                                case 1:
+                                    rDialog.setItems(items1, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            add_repeat.setText(items[i] +", "+ items1[which] + "반복");
+                                            todoTerminal.setTodoRepeat(items[i],items1[which]);
+                                        }
+                                    }).show();
+                                    break;
+                                case 2:
+                                    rDialog.setItems(items2, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            add_repeat.setText(items[i] +", "+ items2[which] + "반복");
+                                            todoTerminal.setTodoRepeat(items[i],items2[which]);
+                                        }
+                                    }).show();
+                                    break;
+                                case 3:
+                                    rDialog.setItems(items3, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            add_repeat.setText(items[i]+ ", " +items3[which]+"일 마다 반복"); // 매월 "시작날짜" 반복
+                                            todoTerminal.setTodoRepeat(items[i],items3[which]);
+                                        }
+                                    }).show();
+
+                                    break;
+                                case 4:
+                                    Log.i("test", items[i]);
+                                    add_repeat.setText(items[i] + " 반복");
+                                    break;
+                            }
                         }
-                    }
-                }).show();
+                    }).show();
+                }
             }
         });
         add_alarm.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +241,7 @@ public class Fragment_todo_addAlarm extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         add_alarm.setText(items[i]);
-                        upload_alarmFLAG = (items[i]);
+                        todoTerminal.setTodoNotification(items[i]);
                     }
                 }).show();
             }
