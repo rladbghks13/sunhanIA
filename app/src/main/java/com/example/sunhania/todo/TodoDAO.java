@@ -78,4 +78,7 @@ public class TodoDAO {
         today.add(Calendar.MONTH,-3);
         Log.i("test",simpleDateFormat.format(today.getTime()));
     }
+    public void uploadTest(){
+
+    }
 }

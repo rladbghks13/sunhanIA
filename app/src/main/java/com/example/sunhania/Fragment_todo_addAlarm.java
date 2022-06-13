@@ -124,6 +124,8 @@ public class Fragment_todo_addAlarm extends Fragment {
                     }
                 } else {
                     if ((clacTime(startdate, enddate) == true && add_startdate.length() != 0)) {
+                        todoTerminal.setTodoStartDate(startdate[0],startdate[1],startdate[2],startdate[3],startdate[4]);
+                        todoTerminal.setTodoEndDate(enddate[0],enddate[1],enddate[2],enddate[3],enddate[4]);
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -132,6 +134,8 @@ public class Fragment_todo_addAlarm extends Fragment {
                         Toast.makeText(getContext(), "시작날짜를 입력해주세요", Toast.LENGTH_SHORT).show();
                     }
                     else{
+                        todoTerminal.setTodoStartDate(startdate[0],startdate[1],startdate[2],00,00);
+                        todoTerminal.setTodoEndDate(startdate[0],startdate[1],startdate[2],00,00);
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -161,7 +165,7 @@ public class Fragment_todo_addAlarm extends Fragment {
             @Override
             public void onClick(View view) {
                 setTimeNow();
-                TimePickerDialog start_timePickerDialog = new TimePickerDialog(getContext(), android.R.style.Theme_Holo_Dialog_NoActionBar, start_timeSetListener, hour, minute, false);
+                TimePickerDialog start_timePickerDialog = new TimePickerDialog(getContext(), android.R.style.Theme_Holo_Dialog_NoActionBar, start_timeSetListener, hour, 00, false);
                 start_timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 start_timePickerDialog.show();
             }
@@ -170,7 +174,7 @@ public class Fragment_todo_addAlarm extends Fragment {
             @Override
             public void onClick(View view) {
                 setTimeNow();
-                TimePickerDialog end_timePickerDialog = new TimePickerDialog(getContext(), android.R.style.Theme_Holo_Dialog_NoActionBar, end_timeSetListener, hour, minute, false);
+                TimePickerDialog end_timePickerDialog = new TimePickerDialog(getContext(), android.R.style.Theme_Holo_Dialog_NoActionBar, end_timeSetListener, hour, 00, false);
                 end_timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 end_timePickerDialog.show();
             }
@@ -283,6 +287,7 @@ public class Fragment_todo_addAlarm extends Fragment {
             mminute = timearray[1];
             ampm = timearray[2];
             add_starttime.setText(ampm + " " + mhour + "시 " + mminute + "분");
+            Log.i("date",hourOfDay + " " + minute);
         }
     };
     private TimePickerDialog.OnTimeSetListener end_timeSetListener = new TimePickerDialog.OnTimeSetListener() {
@@ -296,6 +301,8 @@ public class Fragment_todo_addAlarm extends Fragment {
             mminute = timearray[1];
             ampm = timearray[2];
             add_endtime.setText(ampm + " " + mhour + "시 " + mminute + "분");
+            Log.i("date",hourOfDay + " " + minute);
+
         }
     }; //datepicker, timepicker 세팅
 

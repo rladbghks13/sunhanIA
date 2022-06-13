@@ -61,6 +61,12 @@ public class TodoTerminal {
 
     public void setTodoRepeat(String s, String s1) {
     }
+
+    public void setTodoStartDate(int year, int month, int day, int hour, int minute) {
+    }
+
+    public void setTodoEndDate(int year, int month, int day, int hour, int minute) {
+    }
 }
 
 
