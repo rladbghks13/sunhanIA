@@ -23,10 +23,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.sunhania.todo.TodoDAO;
 import com.example.sunhania.todo.TodoTerminal;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 public class Fragment_todo_addAlarm extends Fragment {
     private View view;
@@ -38,6 +43,7 @@ public class Fragment_todo_addAlarm extends Fragment {
     protected int year, month, day, hour, minute;
     Calendar today;
     private int[] startdate, enddate;
+    TodoDAO todoDAO;
 
 
     @Override
@@ -48,7 +54,7 @@ public class Fragment_todo_addAlarm extends Fragment {
         checkBox_allday.setChecked(false);
         add_title.setText(null);
         add_content.setText(null);
-        Log.i("test","onPause");
+        Log.i("test", "onPause");
     }
 
 
@@ -98,8 +104,6 @@ public class Fragment_todo_addAlarm extends Fragment {
         });
 
 
-
-
         /**
          * Datepicker, Timepicker selectListener
          */
@@ -124,18 +128,17 @@ public class Fragment_todo_addAlarm extends Fragment {
                     }
                 } else {
                     if ((clacTime(startdate, enddate) == true && add_startdate.length() != 0)) {
-                        todoTerminal.setTodoStartDate(startdate[0],startdate[1],startdate[2],startdate[3],startdate[4]);
-                        todoTerminal.setTodoEndDate(enddate[0],enddate[1],enddate[2],enddate[3],enddate[4]);
+                        todoTerminal.setTodoStartDate(startdate[0], startdate[1], startdate[2], startdate[3], startdate[4]);
+                        todoTerminal.setTodoEndDate(enddate[0], enddate[1], enddate[2], enddate[3], enddate[4]);
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                     }
                 }
-                if (checkBox_allday.isChecked()){
-                    if(add_startdate.getText().length()==0){
+                if (checkBox_allday.isChecked()) {
+                    if (add_startdate.getText().length() == 0) {
                         Toast.makeText(getContext(), "시작날짜를 입력해주세요", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        todoTerminal.setTodoStartDate(startdate[0],startdate[1],startdate[2],00,00);
-                        todoTerminal.setTodoEndDate(startdate[0],startdate[1],startdate[2],00,00);
+                    } else {
+                        todoTerminal.setTodoStartDate(startdate[0], startdate[1], startdate[2], 00, 00);
+                        todoTerminal.setTodoEndDate(startdate[0], startdate[1], startdate[2], 23, 59);
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -188,7 +191,7 @@ public class Fragment_todo_addAlarm extends Fragment {
                     final String[] items = {"없음", "매일", "매주", "매월", "매년"};
                     final String[] items1 = {"1일마다", "2일마다", "3일마다", "4일마다", "5일마다", "6일마다"};
                     final String[] items2 = {"1주마다", "2주마다", "3주마다", "4주마다"};
-                    final String[] items3 = {"월초","월말", String.valueOf(startdate[2])};
+                    final String[] items3 = {"월초", "월말", String.valueOf(startdate[2])};
 
                     AlertDialog.Builder rDialog = new AlertDialog.Builder(getContext(), android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                     rDialog.setItems(items, new DialogInterface.OnClickListener() {
@@ -202,8 +205,8 @@ public class Fragment_todo_addAlarm extends Fragment {
                                     rDialog.setItems(items1, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            add_repeat.setText(items[i] +", "+ items1[which] + "반복");
-                                            todoTerminal.setTodoRepeat(items[i],items1[which]);
+                                            add_repeat.setText(items[i] + ", " + items1[which] + "반복");
+                                            todoTerminal.setTodoRepeat(items[i], items1[which]);
                                         }
                                     }).show();
                                     break;
@@ -211,8 +214,8 @@ public class Fragment_todo_addAlarm extends Fragment {
                                     rDialog.setItems(items2, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            add_repeat.setText(items[i] +", "+ items2[which] + "반복");
-                                            todoTerminal.setTodoRepeat(items[i],items2[which]);
+                                            add_repeat.setText(items[i] + ", " + items2[which] + "반복");
+                                            todoTerminal.setTodoRepeat(items[i], items2[which]);
                                         }
                                     }).show();
                                     break;
@@ -220,8 +223,8 @@ public class Fragment_todo_addAlarm extends Fragment {
                                     rDialog.setItems(items3, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            add_repeat.setText(items[i]+ ", " +items3[which]+"일 마다 반복"); // 매월 "시작날짜" 반복
-                                            todoTerminal.setTodoRepeat(items[i],items3[which]);
+                                            add_repeat.setText(items[i] + ", " + items3[which] + "일 마다 반복"); // 매월 "시작날짜" 반복
+                                            todoTerminal.setTodoRepeat(items[i], items3[which]);
                                         }
                                     }).show();
 
@@ -287,7 +290,7 @@ public class Fragment_todo_addAlarm extends Fragment {
             mminute = timearray[1];
             ampm = timearray[2];
             add_starttime.setText(ampm + " " + mhour + "시 " + mminute + "분");
-            Log.i("date",hourOfDay + " " + minute);
+            Log.i("date", hourOfDay + " " + minute);
         }
     };
     private TimePickerDialog.OnTimeSetListener end_timeSetListener = new TimePickerDialog.OnTimeSetListener() {
@@ -301,7 +304,7 @@ public class Fragment_todo_addAlarm extends Fragment {
             mminute = timearray[1];
             ampm = timearray[2];
             add_endtime.setText(ampm + " " + mhour + "시 " + mminute + "분");
-            Log.i("date",hourOfDay + " " + minute);
+            Log.i("date", hourOfDay + " " + minute);
 
         }
     }; //datepicker, timepicker 세팅

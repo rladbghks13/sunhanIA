@@ -3,7 +3,21 @@ package com.example.sunhania.todo;
 import java.util.ArrayList;
 
 public class TodoTerminal {
+
+    public String title;
+    public String content;
+    public String startdate;
+    public TodoTerminal(){
+
+    }
+    public TodoTerminal(String title, String content, String startdate){
+        this.title = title;
+        this.content = content;
+        this.startdate =startdate;
+    }
+
     private String TodoTitle;
+
 
     public String getTodoTitle() {
         return TodoTitle;
@@ -50,6 +64,15 @@ public class TodoTerminal {
     private String TodoContent;
     private String TodoNotification;
     private ArrayList TodoRepeat;
+    private int TodoListLength;
+
+    public int getTodoListLength() {
+        return TodoListLength;
+    }
+
+    public void setTodoListLength(int todoListLength) {
+        this.TodoListLength = todoListLength;
+    }
 
     public ArrayList getTodoRepeat() {
         return TodoRepeat;

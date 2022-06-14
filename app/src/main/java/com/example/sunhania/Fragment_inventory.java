@@ -5,16 +5,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.sunhania.todo.TodoDAO;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApiNotAvailableException;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.sunhania.todo.TodoTerminal;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,8 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,32 +42,21 @@ public class Fragment_inventory extends Fragment {
         Log.i("log", String.valueOf(MainActivity.bottomNavigationView.getSelectedItemId()));
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        HashMap result = new HashMap<>();
-        result.put("name","강감찬");
-        result.put("age","25");
-        result.put("date","202205192157");
-        List<String> list = new ArrayList<String>();
-        list.add("202201010101");
-        list.add("202201010102");
-        list.add("202201010103");
 
 
-        databaseReference.child("users").child("info").setValue(result);
-        databaseReference.child("users").child("date").setValue(list);
 
-        ArrayList list1 = new ArrayList<>();
-        list1.add(1);
-        list1.add(false);
-        list1.add("ㅎㅇ");
-        Log.i("test", String.valueOf(list1));
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        count();
+
+
+        databaseReference.child("schedule").child("1").child("date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    String msg = dataSnapshot.getValue().toString();
-                    Log.i("firebase",msg);
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Log.i("firebase",dataSnapshot.getValue().toString());
                 }
+//                TodoTerminal todoTerminal = snapshot.getValue(TodoTerminal.class);
+//                Log.i("firebase",todoTerminal.title +" "+ todoTerminal.content+" "+todoTerminal.startdate);
             }
 
             @Override
@@ -83,36 +68,43 @@ public class Fragment_inventory extends Fragment {
 
         return view;
     }
+    private void add(){
+        HashMap result = new HashMap<>();
+        result.put("title", "인증서갱신");
+        result.put("content", "인증서갱신하기");
+        result.put("startdate", "202205192157");
+        List<String> list = new ArrayList<String>();
+        list.add("202201010101");
+        list.add("202201010102");
+        list.add("202201010103");
 
 
-    private void initDatabase(){
-        childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+        databaseReference.child("schedule").child("1").child("info").setValue(result);
+        databaseReference.child("schedule").child("1").child("date").setValue(list);
 
-            }
+        ArrayList list1 = new ArrayList<>();
+        list1.add(1);
+        list1.add(false);
+        list1.add("ㅎㅇ");
+        Log.i("test", String.valueOf(list1));
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        databaseReference.addChildEventListener(childEventListener);
     }
 
+    private void count(){
+        databaseReference.child("schedule").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    int todolistIDlegnth = Integer.parseInt(dataSnapshot.getKey());
+                    TodoTerminal todoTerminal = new TodoTerminal();
+                    todoTerminal.setTodoListLength(todolistIDlegnth);
+                    Log.i("firebase key", String.valueOf(todolistIDlegnth));
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "데이터 추가 오류", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
