@@ -25,13 +25,18 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.sunhania.todo.TodoDAO;
 import com.example.sunhania.todo.TodoTerminal;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Fragment_todo_addAlarm extends Fragment {
     private View view;
@@ -43,7 +48,9 @@ public class Fragment_todo_addAlarm extends Fragment {
     protected int year, month, day, hour, minute;
     Calendar today;
     private int[] startdate, enddate;
-    TodoDAO todoDAO;
+    TodoDAO todoDAO = new TodoDAO();
+    TodoTerminal todoTerminal = new TodoTerminal();
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
 
     @Override
@@ -63,8 +70,6 @@ public class Fragment_todo_addAlarm extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_todo_add_alarm, container, false);
 
-
-        TodoTerminal todoTerminal = new TodoTerminal();
         BackPressEvent();
         fragment_todo = new Fragment_todo();
 
@@ -110,6 +115,7 @@ public class Fragment_todo_addAlarm extends Fragment {
         button_addAlarm.setOnClickListener(new View.OnClickListener() { //우측 상단 체크모양 눌러서 등록
             @Override
             public void onClick(View view) {
+                test();
                 if (add_title.length() == 0) { //일정 제목에 아무것도 없으면 "제목 없음"으로 등록
                     todoTerminal.setTodoTitle("제목 없음");
                 } else {
@@ -128,8 +134,8 @@ public class Fragment_todo_addAlarm extends Fragment {
                     }
                 } else {
                     if ((clacTime(startdate, enddate) == true && add_startdate.length() != 0)) {
-                        todoTerminal.setTodoStartDate(startdate[0], startdate[1], startdate[2], startdate[3], startdate[4]);
-                        todoTerminal.setTodoEndDate(enddate[0], enddate[1], enddate[2], enddate[3], enddate[4]);
+                        todoTerminal.setTodoStartDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + String.valueOf(startdate[3]) + String.valueOf(startdate[4]));
+                        todoTerminal.setTodoEndDate(String.valueOf(enddate[0]) + String.valueOf(enddate[1]) + String.valueOf(enddate[2]) + String.valueOf(enddate[3]) + String.valueOf(enddate[4]));
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -137,8 +143,8 @@ public class Fragment_todo_addAlarm extends Fragment {
                     if (add_startdate.getText().length() == 0) {
                         Toast.makeText(getContext(), "시작날짜를 입력해주세요", Toast.LENGTH_SHORT).show();
                     } else {
-                        todoTerminal.setTodoStartDate(startdate[0], startdate[1], startdate[2], 00, 00);
-                        todoTerminal.setTodoEndDate(startdate[0], startdate[1], startdate[2], 23, 59);
+                        todoTerminal.setTodoStartDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + "0000");
+                        todoTerminal.setTodoEndDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + "2359");
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -379,5 +385,60 @@ public class Fragment_todo_addAlarm extends Fragment {
         }
     }
 
+    public void uploadTest() {
 
+        Log.i("test", todoTerminal.getTodoTitle());
+        getTodolistLength();
+        HashMap hashMap = new HashMap<>();
+        hashMap.put("title", todoTerminal.getTodoTitle());
+        hashMap.put("content", todoTerminal.getTodoContent());
+        hashMap.put("startdate", todoTerminal.getTodoStartDate());
+        hashMap.put("enddate", todoTerminal.getTodoEndDate());
+        List<String> list = new ArrayList<String>();
+        list.add("202201010101");
+        list.add("202201010102");
+        list.add("202201010103");
+        Log.i("test", String.valueOf(hashMap));
+
+
+        int TodoNumber = todoTerminal.getTodoListLength();
+        Log.i("test", String.valueOf(TodoNumber));
+        Log.i("test", String.valueOf(todoTerminal.getTodoListLength()));
+
+        TodoNumber = TodoNumber + 1;
+        databaseReference.child("schedule").child(String.valueOf(TodoNumber)).child("info").setValue(hashMap);
+        databaseReference.child("schedule").child(String.valueOf(TodoNumber)).child("date").setValue(list);
+        todoTerminal.setTodoListLength(0);
+    }
+
+    public void getTodolistLength() {
+        databaseReference.child("schedule").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    int todolistIDlegnth = Integer.parseInt(dataSnapshot.getKey());
+                    todoTerminal.setTodoListLength(todolistIDlegnth);
+                    Log.i("firebase getkey", dataSnapshot.getKey());
+                    Log.i("firebase snapshot", String.valueOf(dataSnapshot));
+                    Log.i("firebase", String.valueOf(todoTerminal.getTodoListLength()));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    public void test(){
+
+        HashMap hashMap = new HashMap<>();
+        hashMap.put("title", "title");
+        hashMap.put("content", "content");
+        hashMap.put("startdate", "startdate");
+        hashMap.put("enddate", "enddate");
+        databaseReference.child("schedule").push().child("info").setValue(hashMap);
+        DatabaseReference pushedPostRef = databaseReference.push();
+        Log.i("test",pushedPostRef.getKey());
+    }
 }

@@ -111,10 +111,6 @@ public class TodoDAO {
         TodoNumber = TodoNumber + 1;
         databaseReference.child("schedule").child(String.valueOf(TodoNumber)).child("info").setValue(hashMap);
         databaseReference.child("schedule").child(String.valueOf(TodoNumber)).child("date").setValue(list);
-
-
-
-
     }
     public void getTodolistLength() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -126,11 +122,13 @@ public class TodoDAO {
                     TodoTerminal todoTerminal = new TodoTerminal();
                     todoTerminal.setTodoListLength(todolistIDlegnth);
                     Log.i("firebase", String.valueOf(todoTerminal.getTodoListLength()));
+
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }

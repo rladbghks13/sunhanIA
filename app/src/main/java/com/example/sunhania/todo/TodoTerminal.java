@@ -27,19 +27,19 @@ public class TodoTerminal {
         TodoTitle = todoTitle;
     }
 
-    public int[] getTodoStartDate() {
-        return TodoStartDate;
+    public String getStartdate() {
+        return startdate;
     }
 
-    public void setTodoStartDate(int[] todoStartDate) {
-        TodoStartDate = todoStartDate;
+    public void setStartdate(String startdate) {
+        this.startdate = startdate;
     }
 
-    public int[] getTodoEndDate() {
+    public String getTodoEndDate() {
         return TodoEndDate;
     }
 
-    public void setTodoEndDate(int[] todoEndDate) {
+    public void setTodoEndDate(String todoEndDate) {
         TodoEndDate = todoEndDate;
     }
 
@@ -59,8 +59,16 @@ public class TodoTerminal {
         TodoNotification = todoNotification;
     }
 
-    private int[] TodoStartDate;
-    private int[] TodoEndDate;
+    public String getTodoStartDate() {
+        return TodoStartDate;
+    }
+
+    public void setTodoStartDate(String todoStartDate) {
+        TodoStartDate = todoStartDate;
+    }
+
+    private String TodoStartDate;
+    private String TodoEndDate;
     private String TodoContent;
     private String TodoNotification;
     private ArrayList TodoRepeat;
@@ -85,11 +93,7 @@ public class TodoTerminal {
     public void setTodoRepeat(String s, String s1) {
     }
 
-    public void setTodoStartDate(int year, int month, int day, int hour, int minute) {
-    }
 
-    public void setTodoEndDate(int year, int month, int day, int hour, int minute) {
-    }
 }
 
 

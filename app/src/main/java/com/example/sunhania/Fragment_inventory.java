@@ -45,11 +45,7 @@ public class Fragment_inventory extends Fragment {
 
 
 
-
-        count();
-
-
-        databaseReference.child("schedule").child("1").child("date").addValueEventListener(new ValueEventListener() {
+        databaseReference.child("schedule").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){

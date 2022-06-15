@@ -16,6 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sunhania.backup.BackupRequest;
 import com.example.sunhania.todo.TodoRequest;
+import com.example.sunhania.todo.TodoTerminal;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import org.json.JSONArray;
@@ -30,8 +36,11 @@ public class Fragment_todo extends Fragment {
 
     //리사이클러뷰 선언
     private RecyclerView TodoRecyclerView;
-    private TodoRecyclerAdapter todoRecyclerAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.Adapter adapter;
     private ArrayList<TodoItem> todoItems;
+    private FirebaseDatabase database;
+    private DatabaseReference databaseReference;
 
 
     @Nullable
@@ -39,53 +48,35 @@ public class Fragment_todo extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_todo, container, false);
 
-        setRecyclerView();
+        TodoRecyclerView = (RecyclerView) view.findViewById(R.id.todo_recyclerView);
+        TodoRecyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        TodoRecyclerView.setLayoutManager(layoutManager);
+        todoItems = new ArrayList<>();
+
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference("schedule");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                todoItems.clear();
+                for(DataSnapshot snapshot :datasnapshot.getChildren()){
+                    TodoItem todoItem = snapshot.child("info").getValue(TodoItem.class);
+                    todoItems.add(todoItem);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("test", String.valueOf(error.toException()));
+            }
+        });
+        adapter = new TodoRecyclerAdapter(todoItems,getContext());
+        TodoRecyclerView.setAdapter(adapter);
 
 
         return view;
-    }
-
-    // 리사이클러뷰 세팅
-    private void setRecyclerView() {
-        TodoRecyclerView = (RecyclerView) view.findViewById(R.id.todo_recyclerView);
-
-        todoRecyclerAdapter = new TodoRecyclerAdapter();
-
-        TodoRecyclerView.setAdapter(todoRecyclerAdapter);
-        TodoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        TodoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-
-
-
-        //DB에서 일정 목록을 불러오는 메소드
-        TodoRequest task = new TodoRequest();
-
-        try {
-            JSONArray jsonArray;
-            String result;
-            result = task.execute().get();
-            JSONObject jsonMain = new JSONObject(result);
-            jsonArray = jsonMain.getJSONArray("todolist");
-
-            todoItems = new ArrayList<>();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (jsonObject.getString("completeflag").equals("0")) { //완료 플래그가 0이면 미완료, 1이면 완료이기때문에 미완료 일정만 불러옴
-                    todoItems.add(new TodoItem(jsonObject.getString("title"), jsonObject.getString("startdate")));
-                }
-            }
-            todoRecyclerAdapter.setmTodolist(todoItems);
-
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
 
