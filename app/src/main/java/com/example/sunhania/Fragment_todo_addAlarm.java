@@ -115,7 +115,6 @@ public class Fragment_todo_addAlarm extends Fragment {
         button_addAlarm.setOnClickListener(new View.OnClickListener() { //우측 상단 체크모양 눌러서 등록
             @Override
             public void onClick(View view) {
-                test();
                 if (add_title.length() == 0) { //일정 제목에 아무것도 없으면 "제목 없음"으로 등록
                     todoTerminal.setTodoTitle("제목 없음");
                 } else {
@@ -145,6 +144,7 @@ public class Fragment_todo_addAlarm extends Fragment {
                     } else {
                         todoTerminal.setTodoStartDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + "0000");
                         todoTerminal.setTodoEndDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + "2359");
+                        test();
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -205,14 +205,17 @@ public class Fragment_todo_addAlarm extends Fragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             switch (i) {
                                 case 0:
-                                    add_repeat.setHint("없음");
+                                    add_repeat.setText("없음");
                                     break;
                                 case 1:
                                     rDialog.setItems(items1, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             add_repeat.setText(items[i] + ", " + items1[which] + "반복");
-                                            todoTerminal.setTodoRepeat(items[i], items1[which]);
+                                            todoTerminal.setTodoRepeat1(items[i]);
+                                            todoTerminal.setTodoRepeat2(which + 1);
+                                            Log.i("test", items[i] + "  " + String.valueOf(which));
+
                                         }
                                     }).show();
                                     break;
@@ -221,7 +224,9 @@ public class Fragment_todo_addAlarm extends Fragment {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             add_repeat.setText(items[i] + ", " + items2[which] + "반복");
-                                            todoTerminal.setTodoRepeat(items[i], items2[which]);
+                                            todoTerminal.setTodoRepeat1(items[i]);
+                                            todoTerminal.setTodoRepeat2(which + 1);
+                                            Log.i("test", items[i] + "  " + String.valueOf(which));
                                         }
                                     }).show();
                                     break;
@@ -229,15 +234,25 @@ public class Fragment_todo_addAlarm extends Fragment {
                                     rDialog.setItems(items3, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            add_repeat.setText(items[i] + ", " + items3[which] + "일 마다 반복"); // 매월 "시작날짜" 반복
-                                            todoTerminal.setTodoRepeat(items[i], items3[which]);
+                                            if (items3[which].equals("월초") || items3[which].equals("월말")) {
+                                                add_repeat.setText(items[i] + ", " + items3[which] + " 마다 반복"); // 매월 "시작날짜" 반복
+                                                todoTerminal.setTodoRepeat1(items[i]);
+                                                todoTerminal.setTodoRepeat2(which + 1);
+                                            } else {
+                                                add_repeat.setText(items[i] + ", " + items3[which] + "일 마다 반복");
+                                                todoTerminal.setTodoRepeat1(items[i]);
+                                                todoTerminal.setTodoRepeat2(Integer.parseInt(items3[which]));
+                                            }
                                         }
+
                                     }).show();
 
                                     break;
                                 case 4:
                                     Log.i("test", items[i]);
                                     add_repeat.setText(items[i] + " 반복");
+                                    todoTerminal.setTodoRepeat1(items[i]);
+                                    todoTerminal.setTodoRepeat2(0);
                                     break;
                             }
                         }
@@ -270,7 +285,7 @@ public class Fragment_todo_addAlarm extends Fragment {
             Log.i("date", year + " " + month + " " + day);
             add_startdate.setText(year + "년 " + month + "월 " + day + "일");
             startdate[0] = year;
-            startdate[1] = month;
+            startdate[1] = month - 1;
             startdate[2] = day;
         }
     };
@@ -280,7 +295,7 @@ public class Fragment_todo_addAlarm extends Fragment {
             Log.i("date", year + " " + month + " " + day);
             add_enddate.setText(year + "년 " + month + "월 " + day + "일");
             enddate[0] = year;
-            enddate[1] = month;
+            enddate[1] = month - 1;
             enddate[2] = day;
         }
     };
@@ -430,15 +445,52 @@ public class Fragment_todo_addAlarm extends Fragment {
             }
         });
     }
-    public void test(){
+
+    public void test() {
+
+
+
+        if (add_repeat.getText() == "" || add_repeat.getText() == "없음") {
+            Log.i("test", "true");
+        } else {
+            switch (todoTerminal.getTodoRepeat1()) {
+                case "매일":
+                    todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매일");
+                    break;
+                case "매주":
+                    todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매주");
+                    break;
+                case "매월":
+                    todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매월");
+                    break;
+                case "매년":
+                    todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매년");
+                    break;
+            }
+        }
+
+
+
+    }
+
+    public void wirteSchedule(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Calendar startday = Calendar.getInstance();
+        Calendar endday = Calendar.getInstance();
+        startday.set(startdate[0], startdate[1], startdate[2], startdate[3], startdate[4]);//날자 세팅
+        endday.set(enddate[0], enddate[1], enddate[2], enddate[3], enddate[4]);
+
+        String postKey = databaseReference.child("schedule").push().getKey(); //파이어베이스에 고유 키 생성
 
         HashMap hashMap = new HashMap<>();
-        hashMap.put("title", "title");
-        hashMap.put("content", "content");
-        hashMap.put("startdate", "startdate");
-        hashMap.put("enddate", "enddate");
-        databaseReference.child("schedule").push().child("info").setValue(hashMap);
-        DatabaseReference pushedPostRef = databaseReference.push();
-        Log.i("test",pushedPostRef.getKey());
+        hashMap.put("title", todoTerminal.getTodoTitle());
+        hashMap.put("content", todoTerminal.getTodoContent());
+        hashMap.put("startdate", simpleDateFormat.format(startday.getTime()));
+        hashMap.put("enddate", simpleDateFormat.format(endday.getTime()));
+        hashMap.put("key", postKey);
+        databaseReference.child("schedule").child(postKey).child("info").setValue(hashMap);
+
     }
+
+
 }

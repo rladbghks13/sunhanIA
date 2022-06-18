@@ -71,8 +71,9 @@ public class TodoTerminal {
     private String TodoEndDate;
     private String TodoContent;
     private String TodoNotification;
-    private ArrayList TodoRepeat;
     private int TodoListLength;
+    private String TodoRepeat1;
+    private int TodoRepeat2;
 
     public int getTodoListLength() {
         return TodoListLength;
@@ -82,18 +83,21 @@ public class TodoTerminal {
         this.TodoListLength = todoListLength;
     }
 
-    public ArrayList getTodoRepeat() {
-        return TodoRepeat;
+    public String getTodoRepeat1() {
+        return TodoRepeat1;
     }
 
-    public void setTodoRepeat(ArrayList todoRepeat) {
-        TodoRepeat = todoRepeat;
+    public void setTodoRepeat1(String todoRepeat1) {
+        TodoRepeat1 = todoRepeat1;
     }
 
-    public void setTodoRepeat(String s, String s1) {
+    public int getTodoRepeat2() {
+        return TodoRepeat2;
     }
 
-
+    public void setTodoRepeat2(int todoRepeat2) {
+        TodoRepeat2 = todoRepeat2;
+    }
 }
 
 
