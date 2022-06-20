@@ -400,43 +400,15 @@ public class Fragment_todo_addAlarm extends Fragment {
         }
     }
 
-    public void uploadTest() {
 
-        Log.i("test", todoTerminal.getTodoTitle());
-        getTodolistLength();
-        HashMap hashMap = new HashMap<>();
-        hashMap.put("title", todoTerminal.getTodoTitle());
-        hashMap.put("content", todoTerminal.getTodoContent());
-        hashMap.put("startdate", todoTerminal.getTodoStartDate());
-        hashMap.put("enddate", todoTerminal.getTodoEndDate());
-        List<String> list = new ArrayList<String>();
-        list.add("202201010101");
-        list.add("202201010102");
-        list.add("202201010103");
-        Log.i("test", String.valueOf(hashMap));
-
-
-        int TodoNumber = todoTerminal.getTodoListLength();
-        Log.i("test", String.valueOf(TodoNumber));
-        Log.i("test", String.valueOf(todoTerminal.getTodoListLength()));
-
-        TodoNumber = TodoNumber + 1;
-        databaseReference.child("schedule").child(String.valueOf(TodoNumber)).child("info").setValue(hashMap);
-        databaseReference.child("schedule").child(String.valueOf(TodoNumber)).child("date").setValue(list);
-        todoTerminal.setTodoListLength(0);
-    }
-
-    public void getTodolistLength() {
-        databaseReference.child("schedule").addListenerForSingleValueEvent(new ValueEventListener() {
+    public void read(){
+        databaseReference.child("schedule").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    int todolistIDlegnth = Integer.parseInt(dataSnapshot.getKey());
-                    todoTerminal.setTodoListLength(todolistIDlegnth);
-                    Log.i("firebase getkey", dataSnapshot.getKey());
-                    Log.i("firebase snapshot", String.valueOf(dataSnapshot));
-                    Log.i("firebase", String.valueOf(todoTerminal.getTodoListLength()));
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Log.i("read data", String.valueOf(dataSnapshot));
                 }
+
             }
 
             @Override
@@ -447,9 +419,6 @@ public class Fragment_todo_addAlarm extends Fragment {
     }
 
     public void test() {
-
-
-
         if (add_repeat.getText() == "" || add_repeat.getText() == "없음") {
             Log.i("test", "true");
         } else {

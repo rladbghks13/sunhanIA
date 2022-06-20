@@ -132,7 +132,6 @@ public class TodoDAO {
 
     public void uploadTest() {
         Log.i("test", todoTerminal.getTodoTitle());
-        getTodolistLength();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         HashMap hashMap = new HashMap<>();
         hashMap.put("title", todoTerminal.getTodoTitle());
@@ -150,26 +149,6 @@ public class TodoDAO {
         databaseReference.child("schedule").child(String.valueOf(TodoNumber)).child("date").setValue(list);
     }
 
-    public void getTodolistLength() {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("schedule").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    int todolistIDlegnth = Integer.parseInt(dataSnapshot.getKey());
-                    TodoTerminal todoTerminal = new TodoTerminal();
-                    todoTerminal.setTodoListLength(todolistIDlegnth);
-                    Log.i("firebase", String.valueOf(todoTerminal.getTodoListLength()));
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     public void testtest() {
         databaseReference = FirebaseDatabase.getInstance().getReference();

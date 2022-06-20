@@ -20,7 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,50 +45,14 @@ public class Fragment_inventory extends Fragment {
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-
-
-        databaseReference.child("schedule").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    Log.i("firebase",dataSnapshot.getValue().toString());
-                }
-//                TodoTerminal todoTerminal = snapshot.getValue(TodoTerminal.class);
-//                Log.i("firebase",todoTerminal.title +" "+ todoTerminal.content+" "+todoTerminal.startdate);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+        upload();
+//        read();
 
         return view;
     }
-    private void add(){
-        HashMap result = new HashMap<>();
-        result.put("title", "인증서갱신");
-        result.put("content", "인증서갱신하기");
-        result.put("startdate", "202205192157");
-        List<String> list = new ArrayList<String>();
-        list.add("202201010101");
-        list.add("202201010102");
-        list.add("202201010103");
 
 
-        databaseReference.child("schedule").child("1").child("info").setValue(result);
-        databaseReference.child("schedule").child("1").child("date").setValue(list);
-
-        ArrayList list1 = new ArrayList<>();
-        list1.add(1);
-        list1.add(false);
-        list1.add("ㅎㅇ");
-        Log.i("test", String.valueOf(list1));
-
-    }
-
-    private void count(){
+    private void count() {
         databaseReference.child("schedule").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -97,10 +63,61 @@ public class Fragment_inventory extends Fragment {
                     Log.i("firebase key", String.valueOf(todolistIDlegnth));
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(getContext(), "데이터 추가 오류", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void read() {
+        databaseReference.child("schedule").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void upload() {
+
+        String postKey = databaseReference.child("schedule").push().getKey(); //파이어베이스에 고유 키 생성
+        String key = databaseReference.child("schedule").child(postKey).push().getKey();
+
+        String enddate = "20220101";
+        HashMap hashMap = new HashMap<>();
+        HashMap hashMap2 = new HashMap<>();
+        hashMap.put("title", "제목2");
+        hashMap.put("content", "내용14523");
+        hashMap.put("startdate", "20220101");
+        hashMap.put("enddate", enddate);
+        hashMap.put("postkey", postKey);
+        hashMap.put("key", key);
+        databaseReference.child("schedule").child(postKey).child(key).setValue(hashMap);
+        String[] arr = {"20220201", "20220301", "20220401", "20220501"};
+        Log.i("test", String.valueOf(arr.length));
+        Log.i("test", arr[1]);
+        for (int i = 0; i < arr.length; i++) {
+            Log.i("test i ", String.valueOf(i));
+            String key1 = databaseReference.child("schedule").child(postKey).push().getKey();
+            hashMap2.put("title", "제목2");
+            hashMap2.put("content", "내용46341");
+            hashMap2.put("startdate", arr[i]);
+            hashMap2.put("enddate", enddate);
+            hashMap2.put("postkey", postKey);
+            hashMap2.put("key", key1);
+            databaseReference.child("schedule").child(postKey).child(key1).setValue(hashMap2);
+
+        }
+
+
     }
 }
