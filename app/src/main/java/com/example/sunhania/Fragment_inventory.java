@@ -45,8 +45,9 @@ public class Fragment_inventory extends Fragment {
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        upload();
+//        upload();
 //        read();
+        key();
 
         return view;
     }
@@ -94,7 +95,6 @@ public class Fragment_inventory extends Fragment {
 
         String enddate = "20220101";
         HashMap hashMap = new HashMap<>();
-        HashMap hashMap2 = new HashMap<>();
         hashMap.put("title", "제목2");
         hashMap.put("content", "내용14523");
         hashMap.put("startdate", "20220101");
@@ -103,21 +103,13 @@ public class Fragment_inventory extends Fragment {
         hashMap.put("key", key);
         databaseReference.child("schedule").child(postKey).child(key).setValue(hashMap);
         String[] arr = {"20220201", "20220301", "20220401", "20220501"};
-        Log.i("test", String.valueOf(arr.length));
-        Log.i("test", arr[1]);
-        for (int i = 0; i < arr.length; i++) {
-            Log.i("test i ", String.valueOf(i));
-            String key1 = databaseReference.child("schedule").child(postKey).push().getKey();
-            hashMap2.put("title", "제목2");
-            hashMap2.put("content", "내용46341");
-            hashMap2.put("startdate", arr[i]);
-            hashMap2.put("enddate", enddate);
-            hashMap2.put("postkey", postKey);
-            hashMap2.put("key", key1);
-            databaseReference.child("schedule").child(postKey).child(key1).setValue(hashMap2);
-
-        }
+        // TODO: 2022-06-20 고유키를 이용하여 테이블 재설계하기... 
 
 
+
+    }
+    public void key(){
+        String key = databaseReference.child("schedule").push().getKey();
+        Log.i("test",key);
     }
 }
