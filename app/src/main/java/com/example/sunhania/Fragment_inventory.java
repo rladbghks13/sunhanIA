@@ -103,7 +103,7 @@ public class Fragment_inventory extends Fragment {
         hashMap.put("key", key);
         databaseReference.child("schedule").child(postKey).child(key).setValue(hashMap);
         String[] arr = {"20220201", "20220301", "20220401", "20220501"};
-        // TODO: 2022-06-20 고유키를 이용하여 테이블 재설계하기... 
+        // TODO: 2022-06-20 고유키를 이용하여 테이블 재설계하기...  (timestamp 이용) 
 
 
 
