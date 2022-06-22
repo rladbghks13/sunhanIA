@@ -13,6 +13,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,48 +88,68 @@ public class TodoDAO {
         return DateTime;
     }
 
-    public void testTime(int[] date, int i, String flg) { //반복할때 시간 곱셈
+    public ArrayList testTime(int[] date, int i, String flg) { //반복할때 시간 곱셈
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Calendar today = Calendar.getInstance();
-
+        long time;
+        ArrayList dateList = new ArrayList();
         if (flg.equals("매일")) {
             for (int k = 1; k <= (365 / i); k++) { //365일을 i(일수)로 나눔
                 today.add(Calendar.DAY_OF_MONTH, i);
                 Log.i("매일 반복", simpleDateFormat.format(today.getTime()));
+                time = (today.getTime().getTime());
+                dateList.add(time);
             }
+            return dateList;
         } else if (flg.equals("매주")) {
             for (int k = 1; k <= (365 / (i * 7)); k++) { //365일을 i(주)로 나눔
                 today.add(Calendar.WEEK_OF_MONTH, i);
                 Log.i("매주 반복", simpleDateFormat.format(today.getTime()));
+                time = (today.getTime().getTime());
+                dateList.add(time);
             }
+            return dateList;
         } else if (flg.equals("매월")) {
             if (i == 1) { //월초마다 1년 반복하는 로직
                 today.set(date[0], date[1] - 1, 1, date[3], date[4]);
                 for (int k = 0; k <= 12; k++) {
                     today.add(Calendar.MONTH, +1);
                     Log.i("월초 반복", simpleDateFormat.format(today.getTime()));
+                    time = (today.getTime().getTime());
+                    dateList.add(time);
                 }
+                return dateList;
             } else if (i == 2) { //월말마다 1년으로 반복하는 로직
                 for (int k = 0; k <= 12; k++) {
                     today.set(date[0], date[1], 1, date[3], date[4]);
                     today.add(Calendar.MONTH, k + 1);
                     today.add(Calendar.DAY_OF_MONTH, -1);
                     Log.i("월말 반복", simpleDateFormat.format(today.getTime()));
+                    time = (today.getTime().getTime());
+                    dateList.add(time);
                 }
-            } else  {
-                today.set(date[0],date[1],i,date[3],date[4]);
-                for (int k = 0; k <= 12; k++){
-                    today.add(Calendar.MONTH,1);
-                    Log.i("매월 지정일자 반복",simpleDateFormat.format(today.getTime()));
+                return dateList;
+            } else {
+                today.set(date[0], date[1], i, date[3], date[4]);
+                for (int k = 0; k <= 12; k++) {
+                    today.add(Calendar.MONTH, 1);
+                    Log.i("매월 지정일자 반복", simpleDateFormat.format(today.getTime()));
+                    time = (today.getTime().getTime());
+                    dateList.add(time);
                 }
+                return dateList;
             }
-        }else if (flg.equals("매년")){
-            today.set(date[0],date[1],date[2],date[3],date[4]);
-            for (int k=0; k<=3; k++){
-                today.add(Calendar.YEAR,+1);
-                Log.i("연 반복",simpleDateFormat.format(today.getTime()));
+        } else if (flg.equals("매년")) {
+            today.set(date[0], date[1], date[2], date[3], date[4]);
+            for (int k = 0; k <= 3; k++) {
+                today.add(Calendar.YEAR, +1);
+                Log.i("연 반복", simpleDateFormat.format(today.getTime()));
+                time = (today.getTime().getTime());
+                dateList.add(time);
             }
+            return dateList;
         }
+        return null;
     }
 
     public void uploadTest() {

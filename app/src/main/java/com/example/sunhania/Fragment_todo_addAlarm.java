@@ -21,7 +21,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.sunhania.todo.TodoDAO;
 import com.example.sunhania.todo.TodoTerminal;
@@ -31,12 +30,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Array;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Fragment_todo_addAlarm extends Fragment {
     private View view;
@@ -115,6 +114,7 @@ public class Fragment_todo_addAlarm extends Fragment {
         button_addAlarm.setOnClickListener(new View.OnClickListener() { //우측 상단 체크모양 눌러서 등록
             @Override
             public void onClick(View view) {
+                read();
                 if (add_title.length() == 0) { //일정 제목에 아무것도 없으면 "제목 없음"으로 등록
                     todoTerminal.setTodoTitle("제목 없음");
                 } else {
@@ -130,22 +130,24 @@ public class Fragment_todo_addAlarm extends Fragment {
                 if (!checkBox_allday.isChecked()) {
                     if (add_startdate.length() == 0 || add_starttime.length() == 0 || add_enddate.length() == 0 || add_endtime.length() == 0) {
                         Toast.makeText(getContext(), "날짜, 시간을 입력해주세요", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    if ((clacTime(startdate, enddate) == true && add_startdate.length() != 0)) {
-                        todoTerminal.setTodoStartDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + String.valueOf(startdate[3]) + String.valueOf(startdate[4]));
-                        todoTerminal.setTodoEndDate(String.valueOf(enddate[0]) + String.valueOf(enddate[1]) + String.valueOf(enddate[2]) + String.valueOf(enddate[3]) + String.valueOf(enddate[4]));
-                        Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if ((clacTime(startdate, enddate) == true || add_startdate.length() != 0)) {
+                            todoTerminal.setTodoStartDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + String.valueOf(startdate[3]) + String.valueOf(startdate[4]));
+                            todoTerminal.setTodoEndDate(String.valueOf(enddate[0]) + String.valueOf(enddate[1]) + String.valueOf(enddate[2]) + String.valueOf(enddate[3]) + String.valueOf(enddate[4]));
+                            Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
+                            writeSchedule();
+                        }
                     }
                 }
                 if (checkBox_allday.isChecked()) {
                     if (add_startdate.getText().length() == 0) {
                         Toast.makeText(getContext(), "시작날짜를 입력해주세요", Toast.LENGTH_SHORT).show();
                     } else {
-                        todoTerminal.setTodoStartDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + "0000");
-                        todoTerminal.setTodoEndDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + "2359");
-                        test();
+                        todoTerminal.setTodoStartDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + 0 + 0);
+                        todoTerminal.setTodoEndDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + 23 + 59);
+                        enddate[0]= startdate[0]; enddate[1] = startdate[1]; enddate[2] = startdate[2]; enddate[3] = 23; enddate[4] = 59;
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
+                        writeSchedule();
                     }
                 }
 
@@ -401,16 +403,20 @@ public class Fragment_todo_addAlarm extends Fragment {
     }
 
 
-    public void read(){
+    public void read() {
         databaseReference.child("schedule").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    Log.i("read data", String.valueOf(dataSnapshot));
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Log.i("read", String.valueOf(dataSnapshot.child("content")));
+                    Log.i("read", String.valueOf(dataSnapshot.child("startdate")));
+                    Log.i("read", String.valueOf(dataSnapshot.child("title")));
+                    Log.i("read", String.valueOf(dataSnapshot.child("key")));
+
+
                 }
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -418,46 +424,71 @@ public class Fragment_todo_addAlarm extends Fragment {
         });
     }
 
-    public void test() {
+    public void writeSchedule() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Calendar startday = Calendar.getInstance();
+        Calendar endday = Calendar.getInstance();
+        ArrayList startDateList = new ArrayList(); // 반복된 날짜를 함수에서 받아올 리스트 생성
+        ArrayList endDateList = new ArrayList();
+        startday.set(startdate[0], startdate[1], startdate[2], startdate[3], startdate[4]);//날자 세팅
+        endday.set(enddate[0], enddate[1], enddate[2], enddate[3], enddate[4]);
+
+        long setStartDay = startday.getTime().getTime(); //TimeStamp형식으로 DB에 저장하기위해 변환
+        long setEndDay = endday.getTime().getTime();
+        Log.i("test",simpleDateFormat.format(setStartDay));
+        Log.i("test",simpleDateFormat.format(setEndDay));
+
+
+        String postKey = databaseReference.child("schedule").push().getKey(); //파이어베이스에 고유 키 생성
+        HashMap hashMap = new HashMap<>();
+        hashMap.put("title", todoTerminal.getTodoTitle());
+        hashMap.put("content", todoTerminal.getTodoContent());
+        hashMap.put("startdate", setStartDay);
+        hashMap.put("enddate", setEndDay);
+        hashMap.put("postKey", postKey);
+        hashMap.put("key", postKey);
+        databaseReference.child("schedule").child(postKey).setValue(hashMap);
+
+
         if (add_repeat.getText() == "" || add_repeat.getText() == "없음") {
             Log.i("test", "true");
         } else {
             switch (todoTerminal.getTodoRepeat1()) {
                 case "매일":
-                    todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매일");
+                    startDateList = todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매일");
+                    endDateList = todoDAO.testTime(enddate, todoTerminal.getTodoRepeat2(), "매일");
                     break;
                 case "매주":
-                    todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매주");
+                    startDateList = todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매주");
+                    endDateList = todoDAO.testTime(enddate, todoTerminal.getTodoRepeat2(), "매주");
+                    Log.i("매일", String.valueOf(startDateList));
                     break;
                 case "매월":
-                    todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매월");
+                    startDateList = todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매월");
+                    endDateList = todoDAO.testTime(enddate, todoTerminal.getTodoRepeat2(), "매월");
+                    Log.i("매일", String.valueOf(startDateList));
                     break;
                 case "매년":
-                    todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매년");
+                    startDateList = todoDAO.testTime(startdate, todoTerminal.getTodoRepeat2(), "매년");
+                    endDateList = todoDAO.testTime(enddate, todoTerminal.getTodoRepeat2(), "매년");
+                    Log.i("매일", String.valueOf(startDateList));
                     break;
+            }
+            Log.i("test dataList size", String.valueOf(startDateList.size()));
+            Log.i("test dataList", String.valueOf(startDateList));
+            for (int i = 0; i < startDateList.size(); i++) {
+
+                String key = databaseReference.child("schedule").push().getKey();
+                hashMap.put("title", todoTerminal.getTodoTitle());
+                hashMap.put("content", todoTerminal.getTodoContent());
+                hashMap.put("startdate", startDateList.get(i));
+                hashMap.put("enddate", endDateList.get(i));
+                hashMap.put("postKey", postKey);
+                hashMap.put("key", key);
+                databaseReference.child("schedule").child(key).setValue(hashMap);
             }
         }
 
-
-
-    }
-
-    public void wirteSchedule(){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Calendar startday = Calendar.getInstance();
-        Calendar endday = Calendar.getInstance();
-        startday.set(startdate[0], startdate[1], startdate[2], startdate[3], startdate[4]);//날자 세팅
-        endday.set(enddate[0], enddate[1], enddate[2], enddate[3], enddate[4]);
-
-        String postKey = databaseReference.child("schedule").push().getKey(); //파이어베이스에 고유 키 생성
-
-        HashMap hashMap = new HashMap<>();
-        hashMap.put("title", todoTerminal.getTodoTitle());
-        hashMap.put("content", todoTerminal.getTodoContent());
-        hashMap.put("startdate", simpleDateFormat.format(startday.getTime()));
-        hashMap.put("enddate", simpleDateFormat.format(endday.getTime()));
-        hashMap.put("key", postKey);
-        databaseReference.child("schedule").child(postKey).child("info").setValue(hashMap);
 
     }
 

@@ -48,32 +48,32 @@ public class Fragment_todo extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_todo, container, false);
 
-//        TodoRecyclerView = (RecyclerView) view.findViewById(R.id.todo_recyclerView);
-//        TodoRecyclerView.setHasFixedSize(true);
-//        layoutManager = new LinearLayoutManager(getContext());
-//        TodoRecyclerView.setLayoutManager(layoutManager);
-//        todoItems = new ArrayList<>();
-//
-//        database = FirebaseDatabase.getInstance();
-//        databaseReference = database.getReference("schedule");
-//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-//                todoItems.clear();
-//                for(DataSnapshot snapshot :datasnapshot.getChildren()){
-//                    TodoItem todoItem = snapshot.child("info").getValue(TodoItem.class);
-//                    todoItems.add(todoItem);
-//                }
-//                adapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Log.e("test", String.valueOf(error.toException()));
-//            }
-//        });
-//        adapter = new TodoRecyclerAdapter(todoItems,getContext());
-//        TodoRecyclerView.setAdapter(adapter);
+        TodoRecyclerView = (RecyclerView) view.findViewById(R.id.todo_recyclerView);
+        TodoRecyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        TodoRecyclerView.setLayoutManager(layoutManager);
+        todoItems = new ArrayList<>();
+
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference("schedule");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                todoItems.clear();
+                for(DataSnapshot snapshot :datasnapshot.getChildren()){
+                    TodoItem todoItem = snapshot.getValue(TodoItem.class);
+                    todoItems.add(todoItem);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("test", String.valueOf(error.toException()));
+            }
+        });
+        adapter = new TodoRecyclerAdapter(todoItems,getContext());
+        TodoRecyclerView.setAdapter(adapter);
 
 
         return view;

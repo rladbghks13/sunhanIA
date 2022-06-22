@@ -20,9 +20,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,7 +49,8 @@ public class Fragment_inventory extends Fragment {
 
 //        upload();
 //        read();
-        key();
+//        key();
+        date();
 
         return view;
     }
@@ -77,6 +80,8 @@ public class Fragment_inventory extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    TodoItem todoItem = snapshot.getValue(TodoItem.class);
+
 
                 }
             }
@@ -111,5 +116,29 @@ public class Fragment_inventory extends Fragment {
     public void key(){
         String key = databaseReference.child("schedule").push().getKey();
         Log.i("test",key);
+    }
+
+    public void date(){
+        Calendar calendar = Calendar.getInstance();
+        Calendar calendar1 = Calendar.getInstance();
+        calendar.set(2022,06,21,8,22);
+        calendar1.set(2022,06,22,8,22);
+        Date toTimeStamp =new Date();
+        Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
+
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        Log.i("test", dateFormat.format(timestamp));
+        long time1 = calendar.getTimeInMillis();
+        long time2 = calendar1.getTimeInMillis();
+        long time3 = calendar1.getTime().getTime();
+        long result = time2-time1;
+        Log.i("test", String.valueOf(time1));
+        Log.i("test", String.valueOf(time2));
+        Log.i("test", String.valueOf(time3));
+        Log.i("test", String.valueOf(result));
+        Log.i("test",dateFormat.format(time1));
+        Log.i("test",dateFormat.format(result));
+
     }
 }
