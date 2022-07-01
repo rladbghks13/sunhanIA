@@ -1,4 +1,4 @@
-package com.example.sunhania;
+package com.example.sunhania.todo;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -22,16 +22,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.sunhania.todo.TodoDAO;
-import com.example.sunhania.todo.TodoTerminal;
+import com.example.sunhania.MainActivity;
+import com.example.sunhania.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Array;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,6 +83,13 @@ public class Fragment_todo_addAlarm extends Fragment {
         add_repeat = view.findViewById(R.id.textView_alarmrepeat);
         add_alarm = view.findViewById(R.id.textView_alarmBell);
         checkBox_allday = view.findViewById(R.id.checkbox_allday); //선언부
+
+        button_addAlarmExit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                MainActivity.manager.beginTransaction().replace(R.id.main_layout, fragment_todo).commitAllowingStateLoss();
+            }
+        });
 
 
         checkBox_allday.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +150,11 @@ public class Fragment_todo_addAlarm extends Fragment {
                     } else {
                         todoTerminal.setTodoStartDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + 0 + 0);
                         todoTerminal.setTodoEndDate(String.valueOf(startdate[0]) + String.valueOf(startdate[1]) + String.valueOf(startdate[2]) + 23 + 59);
-                        enddate[0]= startdate[0]; enddate[1] = startdate[1]; enddate[2] = startdate[2]; enddate[3] = 23; enddate[4] = 59;
+                        enddate[0] = startdate[0];
+                        enddate[1] = startdate[1];
+                        enddate[2] = startdate[2];
+                        enddate[3] = 23;
+                        enddate[4] = 59;
                         Toast.makeText(getContext(), "등록완료", Toast.LENGTH_SHORT).show();
                         writeSchedule();
                     }
@@ -158,7 +167,7 @@ public class Fragment_todo_addAlarm extends Fragment {
             @Override
             public void onClick(View view) {
                 setTimeNow();
-                DatePickerDialog start_datePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, start_dateSetlistener, year, month + 1, day);
+                DatePickerDialog start_datePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, start_dateSetlistener, year, month, day);
                 start_datePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 start_datePickerDialog.show();
             }
@@ -167,7 +176,7 @@ public class Fragment_todo_addAlarm extends Fragment {
             @Override
             public void onClick(View view) {
                 setTimeNow();
-                DatePickerDialog end_datePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, end_dateSetlistener, year, month + 1, day);
+                DatePickerDialog end_datePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar, end_dateSetlistener, year, month, day);
                 end_datePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 end_datePickerDialog.show();
             }
@@ -285,9 +294,9 @@ public class Fragment_todo_addAlarm extends Fragment {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             Log.i("date", year + " " + month + " " + day);
-            add_startdate.setText(year + "년 " + month + "월 " + day + "일");
+            add_startdate.setText(year + "년 " + (month+1) + "월 " + day + "일");
             startdate[0] = year;
-            startdate[1] = month - 1;
+            startdate[1] = month;
             startdate[2] = day;
         }
     };
@@ -295,9 +304,9 @@ public class Fragment_todo_addAlarm extends Fragment {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             Log.i("date", year + " " + month + " " + day);
-            add_enddate.setText(year + "년 " + month + "월 " + day + "일");
+            add_enddate.setText(year + "년 " + (month+1) + "월 " + day + "일");
             enddate[0] = year;
-            enddate[1] = month - 1;
+            enddate[1] = month;
             enddate[2] = day;
         }
     };
@@ -342,7 +351,7 @@ public class Fragment_todo_addAlarm extends Fragment {
 
             }
         };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
     }
 
     private void setTimeNow() {  //시간을 현재시간으로 맞춤
@@ -417,6 +426,7 @@ public class Fragment_todo_addAlarm extends Fragment {
                 }
 
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -435,8 +445,8 @@ public class Fragment_todo_addAlarm extends Fragment {
 
         long setStartDay = startday.getTime().getTime(); //TimeStamp형식으로 DB에 저장하기위해 변환
         long setEndDay = endday.getTime().getTime();
-        Log.i("test",simpleDateFormat.format(setStartDay));
-        Log.i("test",simpleDateFormat.format(setEndDay));
+        Log.i("test", simpleDateFormat.format(setStartDay));
+        Log.i("test", simpleDateFormat.format(setEndDay));
 
 
         String postKey = databaseReference.child("schedule").push().getKey(); //파이어베이스에 고유 키 생성

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardUseCompatPadding='true'>
+    <View
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/circle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:backgroundTint="#00AAFF"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/circle"/>
+
+    <TextView
+
+        android:id="@+id/todo_calendar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:text="게임하기"
+        android:textColor="#00AAFF"
+        android:textSize="13dp"
+        app:layout_constraintBottom_toBottomOf="@+id/circle"
+        app:layout_constraintLeft_toLeftOf="@id/circle"
+        app:layout_constraintTop_toTopOf="@+id/circle" />
+</androidx.constraintlayout.widget.ConstraintLayout>

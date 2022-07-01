@@ -12,21 +12,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.sunhania.todo.TodoDAO;
-import com.example.sunhania.todo.TodoTerminal;
+import com.example.sunhania.todo.TodoItem;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class Fragment_inventory extends Fragment {
     private View view;
@@ -50,29 +51,10 @@ public class Fragment_inventory extends Fragment {
 //        upload();
 //        read();
 //        key();
-        date();
-
+//        date();
+//        countdday();
+        test();
         return view;
-    }
-
-
-    private void count() {
-        databaseReference.child("schedule").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    int todolistIDlegnth = Integer.parseInt(dataSnapshot.getKey());
-                    TodoTerminal todoTerminal = new TodoTerminal();
-                    todoTerminal.setTodoListLength(todolistIDlegnth);
-                    Log.i("firebase key", String.valueOf(todolistIDlegnth));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "데이터 추가 오류", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void read() {
@@ -113,21 +95,17 @@ public class Fragment_inventory extends Fragment {
 
 
     }
-    public void key(){
-        String key = databaseReference.child("schedule").push().getKey();
-        Log.i("test",key);
-    }
 
     public void date(){
         Calendar calendar = Calendar.getInstance();
         Calendar calendar1 = Calendar.getInstance();
-        calendar.set(2022,06,21,8,22);
+        calendar.set(2022,06,22,8,21);
         calendar1.set(2022,06,22,8,22);
         Date toTimeStamp =new Date();
         Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm"); //1분 60000   1일 86400000     1개월 2592000000 1719014437840
         Log.i("test", dateFormat.format(timestamp));
         long time1 = calendar.getTimeInMillis();
         long time2 = calendar1.getTimeInMillis();
@@ -139,6 +117,50 @@ public class Fragment_inventory extends Fragment {
         Log.i("test", String.valueOf(result));
         Log.i("test",dateFormat.format(time1));
         Log.i("test",dateFormat.format(result));
+    }
+
+    public void countdday() {
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+            Calendar todaCal = Calendar.getInstance();
+            todaCal.setTime(new Date());
+            Calendar ddayCal = Calendar.getInstance();
+
+            ddayCal.set(2022, 05, 24, 13, 00);
+            Log.i("test", simpleDateFormat.format(todaCal.getTime()) + "");
+            Log.i("test", simpleDateFormat.format(ddayCal.getTime()) + "");
+
+            Calendar month = Calendar.getInstance();
+            month.add(Calendar.MONTH,1);
+            Log.i("test", String.valueOf(todaCal.getTimeInMillis())+" todacal gettime mil");
+            Log.i("test", String.valueOf(month.getTimeInMillis())+" month gettime mil");
+            Log.i("test",simpleDateFormat.format(todaCal.getTime())+ " now time");
+            Log.i("test",simpleDateFormat.format(month.getTime())+" after one month");
+
+            long diffSec = (todaCal.getTimeInMillis()-ddayCal.getTimeInMillis()) /1000; //초 차이
+            long diffDays = diffSec / (24*60*60); //일자수 차이
+            long diffTime = diffSec / (60*60); //시간 차이
+            Log.i("test", String.valueOf(diffSec) + " 초 차이");
+            Log.i("test", String.valueOf(diffDays) + " 일 차이");
+            Log.i("test", String.valueOf(diffTime) + " 시간 차이");
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void Clenadartest(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        Calendar calendar = Calendar.getInstance();
+        long time = 1653145246015L;
+        Log.i("test",simpleDateFormat.format(time));
+    }
+    public void test(){
+        if (1656428402280L <= 1656428417856L && (1656428402280L+86390000) > 1656428417856L){
+            Log.i("test", "correct");
+        }
 
     }
 }

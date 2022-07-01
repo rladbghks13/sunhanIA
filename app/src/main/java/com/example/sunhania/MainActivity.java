@@ -13,15 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.sunhania.backup.Fragment_backup;
+import com.example.sunhania.todo.Fragment_todo;
+import com.example.sunhania.todo.Fragment_todo_Calendar;
+import com.example.sunhania.todo.Fragment_todo_addAlarm;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -51,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.i("test","start");
-
         manager = getSupportFragmentManager();
 
         //프래그먼트 생성

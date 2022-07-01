@@ -1,6 +1,8 @@
 package com.example.sunhania.todo;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.Toast;
@@ -13,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Array;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -30,63 +33,9 @@ import javax.security.auth.login.LoginException;
 public class TodoDAO {
 
     DatabaseReference databaseReference;
+    FirebaseDatabase firebaseDatabase;
     TodoTerminal todoTerminal = new TodoTerminal();
 
-
-    //시간 계산하는 메서드
-    public int countdday(int myear, int mmonth, int mday, int mHour, int mMinute) {
-        try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-            Calendar todaCal = Calendar.getInstance();
-            Calendar ddayCal = Calendar.getInstance();
-
-            mmonth -= 1;
-            ddayCal.set(myear, mmonth, mday, mHour, mMinute);
-            Log.i("test", simpleDateFormat.format(todaCal.getTime()) + "");
-            Log.i("test", simpleDateFormat.format(ddayCal.getTime()) + "");
-
-            long today = todaCal.getTimeInMillis();
-            long dday = ddayCal.getTimeInMillis();
-
-            Log.i("test", String.valueOf(today));
-            Log.i("test", String.valueOf(dday));
-            long count = (dday - today);
-
-            return (int) count;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public int[] nowDate() {
-        int[] DateTime = new int[5];
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmm");
-        String current = simpleDateFormat.format(currentTime);
-
-        String year = current.substring(0, 4);
-        String month = current.substring(4, 6);
-        String day = current.substring(6, 8);
-        String hour = current.substring(8, 10);
-        String minute = current.substring(10, 12);
-
-        int myear = Integer.parseInt(year);
-        int mmonth = Integer.parseInt(month);
-        int mday = Integer.parseInt(day);
-        int mhour = Integer.parseInt(hour);
-        int mminute = Integer.parseInt(minute);
-
-        DateTime[0] = myear;
-        DateTime[1] = mmonth;
-        DateTime[2] = mday;
-        DateTime[3] = mhour;
-        DateTime[4] = mminute;
-
-        Log.i("test", String.valueOf(DateTime));
-        return DateTime;
-    }
 
     public ArrayList testTime(int[] date, int i, String flg) { //반복할때 시간 곱셈
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -152,28 +101,19 @@ public class TodoDAO {
         return null;
     }
 
-    public void uploadTest() {
-        Log.i("test", todoTerminal.getTodoTitle());
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        HashMap hashMap = new HashMap<>();
-        hashMap.put("title", todoTerminal.getTodoTitle());
-        hashMap.put("content", todoTerminal.getTodoContent());
-        hashMap.put("startdate", todoTerminal.getTodoStartDate());
-        List<String> list = new ArrayList<String>();
-        list.add("202201010101");
-        list.add("202201010102");
-        list.add("202201010103");
-        Log.i("test", String.valueOf(hashMap));
 
-        int TodoNumber = todoTerminal.getTodoListLength();
-        TodoNumber = TodoNumber + 1;
-        databaseReference.child("schedule").child(String.valueOf(TodoNumber)).child("info").setValue(hashMap);
-        databaseReference.child("schedule").child(String.valueOf(TodoNumber)).child("date").setValue(list);
+    public int[] setTimeNow(){
+        Calendar today;
+        int[] dateArray;
+        int year, month, day, hour, minute;
+        today = Calendar.getInstance();
+        year = today.get(Calendar.YEAR);
+        month = today.get(Calendar.MONTH);
+        day = today.get(Calendar.DAY_OF_MONTH);
+        hour = today.get(Calendar.HOUR_OF_DAY);
+        minute =today.get(Calendar.MINUTE);
+        dateArray = new int[]{year, month, day, hour, minute};
+        return dateArray;
     }
 
-
-    public void testtest() {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        Log.i("firebase", databaseReference.child("schedule").getKey());
-    }
 }
