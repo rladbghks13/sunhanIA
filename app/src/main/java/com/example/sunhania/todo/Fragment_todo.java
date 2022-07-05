@@ -67,7 +67,7 @@ public class Fragment_todo extends Fragment {
                     TodoItem todoItem = snapshot.getValue(TodoItem.class);
                     todoItem.setDate(convertTime(todoItem.getStartdate())); //파이어베이스 안에 int형식의 startdate를 Simpledateformat 형식으로 바꿔서 올림
 
-                    if (todoItem.getStartdate() >= todayCal.getTimeInMillis() && todoItem.getStartdate() <= beforeCal.getTimeInMillis()) { //오늘 일자로부터 1개월안에 일정만 출력
+                    if (todoItem.getStartdate() >= todayCal.getTimeInMillis() && todoItem.getStartdate() < beforeCal.getTimeInMillis()) { //오늘 일자로부터 1개월안에 일정만 출력
                         todoItems.add(todoItem);
                     }
                 }

@@ -151,16 +151,18 @@ public class Fragment_inventory extends Fragment {
             e.printStackTrace();
         }
     }
-    public void Clenadartest(){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        Calendar calendar = Calendar.getInstance();
-        long time = 1653145246015L;
-        Log.i("test",simpleDateFormat.format(time));
-    }
     public void test(){
-        if (1656428402280L <= 1656428417856L && (1656428402280L+86390000) > 1656428417856L){
-            Log.i("test", "correct");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2022,07,01,0,0);
+        long time1 = calendar.getTimeInMillis();
+        long time2 = time1 + 86340000;
+        long mytime = calendar.getTimeInMillis();
+        if (mytime >=time1 && mytime <time2){
+            Log.i("test", "OK");
         }
-
+        else {
+            Log.i("test", "NO");
+        }
     }
 }
